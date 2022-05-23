@@ -1,6 +1,6 @@
 # from cv2 import log
 from django.shortcuts import render, redirect
-from .forms import DweetForm, QuoteForm, DocumentForm
+from .forms import DweetForm, QuoteForm
 from .models import Profile, Dweet
 from django.contrib.auth.decorators import login_required
 from django import forms
@@ -35,7 +35,6 @@ def dashboard(request):
 
 #         return redirect("dwitter:dashboard")
 
-
 @login_required
 def profile_list(request):
     profiles = Profile.objects.exclude(user=request.user)
@@ -65,45 +64,14 @@ class LoginForm(AuthenticationForm):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('members:members-home')
-        return super('dashboard', self).dispatch(request, *args, **kwargs)
-
-
+        return super('dwitter:dashboard', self).dispatch(request, *args, **kwargs)
   
 def upload_file(request):
     if request.method == 'POST':
         form = QuoteForm(request.POST, request.FILES)
         if form.is_valid():
-            # file is saved
-            print(" form is valid")
             form.save()
             return redirect("dwitter:upload_file")
-        else:
-            print("form is not valid")
     else:
         form = QuoteForm(request.FILES)
     return render(request, 'upload.html', {"form": form})
-
-
-# def upload_file(request):
-#     if request.method == 'POST' and request.FILES['myfile']:
-#         myfile = request.FILES['myfile']
-#         fs = FileSystemStorage()
-#         filename = fs.save(myfile.name, myfile)
-#         uploaded_file_url = fs.url(filename)
-#         return render(request, 'upload.html', {
-#             'uploaded_file_url': uploaded_file_url
-#         })
-#     return render(request, 'upload.html')
-
-# def model_form_upload(request):
-#     if request.method == 'POST':
-#         form = DocumentForm(request.Post, request.Files)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('home')
-
-#     else:
-#         form = DocumentForm()
-#     return render(request, 'upload.html', {'form': form})
-
-

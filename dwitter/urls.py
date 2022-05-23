@@ -8,5 +8,5 @@ urlpatterns = [
     path("profile_list/", profile_list, name="profile_list"),
     path("profile/<int:pk>", profile, name="profile"),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("upload/",upload_file, name="upload_file"),
+    path("upload/", upload_file, name="upload_file"),
 ]
