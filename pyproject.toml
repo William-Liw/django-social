@@ -7,6 +7,8 @@ authors = ["William Liw <william@thelessonspace.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 Django = "^4.0.4"
+djangorestframework = "^3.13.1"
+django-restframework = "^0.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

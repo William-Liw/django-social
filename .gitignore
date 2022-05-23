@@ -2,3 +2,8 @@ __pycache__
 example
 tests
 dwitter/__pycache__/
+dwitter/__pycache__/admin.cpython-39.pyc
+dwitter/__pycache__/models.cpython-39.pyc
+dwitter/__pycache__/urls.cpython-39.pyc
+dwitter/__pycache__/views.cpython-39.pyc
+account/

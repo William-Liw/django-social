@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="block">
+    <body>You have successfully logged out!</body>
+    <div class="block">
+        <a href="{% url 'dwitter:login' %}">
+            <button class="button is-dark is-outlined">
+                Login
+            </button>
+        </a>
+    </div>
+</div>
+{% endblock content %}

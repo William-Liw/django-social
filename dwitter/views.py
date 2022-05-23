@@ -1,7 +1,15 @@
+# from cv2 import log
 from django.shortcuts import render, redirect
-from .forms import DweetForm
+from .forms import DweetForm, QuoteForm
 from .models import Profile, Dweet
+from django.contrib.auth.decorators import login_required
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+from django.http import HttpResponseRedirect
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
+@login_required
 def dashboard(request):
     form = DweetForm(request.POST or None)
     if request.method == 'POST':
@@ -20,11 +28,20 @@ def dashboard(request):
         {"form": form, "dweets": followed_dweets},
         )
 
+# @login_required
+# class DashboardView():
+#     form = D
+#     def post(self, request, *args, **kwargs):
+
+#         return redirect("dwitter:dashboard")
+
+
+@login_required
 def profile_list(request):
     profiles = Profile.objects.exclude(user=request.user)
     return render(request, "dwitter/profile_list.html", {"profiles": profiles})
 
-
+@login_required
 def profile(request, pk):
     if not hasattr(request.user, 'profile'):
         missing_profile = Profile(user=request.user)
@@ -41,4 +58,39 @@ def profile(request, pk):
             current_user_profile.follows.remove(profile)
         current_user_profile.save()
     return render(request, "dwitter/profile.html", {"profile": profile})
-    
+
+class LoginForm(AuthenticationForm):
+    template_name = "dwitter/dashboard.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('members:members-home')
+        return super(HomeView, self).dispatch(request, *args, **kwargs)
+
+
+  
+# def upload_file(request):
+#     if request.method == 'POST':
+#         form = QuoteForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             # file is saved
+#             print(" form is valid")
+#             form.save()
+#             return redirect("dwitter:upload_file")
+#         else:
+#             print("form is not valid")
+#     else:
+#         form = QuoteForm(request.FILES)
+#     return render(request, 'upload.html', {"upload_file": upload_file})
+
+
+def upload_file(request):
+    if request.method == 'POST' and request.FILES['myfile']:
+        myfile = request.FILES['myfile']
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
+        uploaded_file_url = fs.url(filename)
+        return render(request, 'upload.html', {
+            'uploaded_file_url': uploaded_file_url
+        })
+    return render(request, 'upload.html')

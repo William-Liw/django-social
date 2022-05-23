@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="block">
+    <div class="block">
+        <h2 class="title is-2">Upload a file</h2>
+    </div>
+    <div class="block">        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- {{ form.as_p }} -->
+            <input type="file" name="myfile">
+                <button class="button is-success is-fullwidth is-medium mt-5"
+                type="submit">Upload
+            </button>
+        </form>
+        {% if uploaded_file_url %}
+        <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+      {% endif %}
+    
+      <p><a href="{% url 'dwitter:dashboard' %}">Return to home</a></p>
+
+
+
+    </div>
+</div>
+{% endblock %}
