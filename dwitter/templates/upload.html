@@ -11,8 +11,8 @@
     <div class="block">        
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <!-- {{ form.as_p }} -->
-            <input type="file" name="myfile">
+            {{ form.as_p }}
+            <!-- <input type="file" name="myfile"> -->
                 <button class="button is-success is-fullwidth is-medium mt-5"
                 type="submit">Upload
             </button>

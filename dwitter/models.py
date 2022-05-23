@@ -41,3 +41,21 @@ def create_profile(sender, instance, created, **kwargs):
 
 
 
+class Quote(models.Model):
+    school_name = models.CharField(max_length=255, blank=True)
+    pdf_file = models.FileField(blank=True)
+
+    def __str__(self):
+        return (
+            f"{self.school_name} "
+
+        )
+class Document(models.Model):
+    description = models.CharField(max_length=255, blank=True)
+    document = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return (
+            f"{self.name} "
+        )
