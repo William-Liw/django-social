@@ -1,13 +1,16 @@
 # from cv2 import log
 from django.shortcuts import render, redirect
 from .forms import DweetForm, QuoteForm
-from .models import Profile, Dweet
+from .models import Profile, Dweet, Quote
 from django.contrib.auth.decorators import login_required
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from rest_framework.generics import ListCreateAPIView
+from .serializers import QuoteSerializer
+from drf_yasg.utils import swagger_auto_schema
 
 @login_required
 def dashboard(request):
@@ -75,3 +78,22 @@ def upload_file(request):
     else:
         form = QuoteForm(request.FILES)
     return render(request, 'upload.html', {"form": form})
+
+class QuoteView(ListCreateAPIView):
+    serializer_class = QuoteSerializer
+    queryset = Quote.objects.all()
+    
+    @swagger_auto_schema(auto_schema=None)
+    def post(self, request, *args, **kwargs):
+        serializer = QuoteSerializer
+
+
+        form = QuoteForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("dwitter:upload_file")
+    
+    @swagger_auto_schema(auto_schema=None)
+    def get(self, request, *args, **kwargs):
+        form = QuoteForm(request.FILES)
+        return render(request, 'upload.html', {"form": form})
