@@ -82,16 +82,14 @@ def upload_file(request):
 class QuoteView(ListCreateAPIView):
     serializer_class = QuoteSerializer
     queryset = Quote.objects.all()
-    
+
     @swagger_auto_schema(auto_schema=None)
     def post(self, request, *args, **kwargs):
-        serializer = QuoteSerializer
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-
-        form = QuoteForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect("dwitter:upload_file")
+        return redirect("dwitter:upload_file")
     
     @swagger_auto_schema(auto_schema=None)
     def get(self, request, *args, **kwargs):
