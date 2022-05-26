@@ -1,16 +1,23 @@
 # from cv2 import log
+import io
+
+
 from django.shortcuts import render, redirect
 from .forms import DweetForm, QuoteForm
 from .models import Profile, Dweet, Quote
 from django.contrib.auth.decorators import login_required
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponseRedirect
+from django.http import FileResponse
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 from rest_framework.generics import ListCreateAPIView
 from .serializers import QuoteSerializer
 from drf_yasg.utils import swagger_auto_schema
+from django.core.files import File
+from django.template.loader import get_template
+from weasyprint import HTML
+from django.core.files.base import ContentFile
+
 
 @login_required
 def dashboard(request):
@@ -80,18 +87,50 @@ def upload_file(request):
     return render(request, 'upload.html', {"form": form})
 
 class QuoteView(ListCreateAPIView):
+    _type = "Proforma Invoice"
     serializer_class = QuoteSerializer
     queryset = Quote.objects.all()
+
+    def createPdf(self, data):  
+        raw_html = get_template("invoices/quote.html").render({"title": self._type, **data})
+        doc = HTML(string=raw_html)
+        pdf = io.BytesIO()
+        doc.write_pdf(target=pdf)
+        pdf.seek(0)
+        pdf.html = raw_html
+        return pdf
 
     @swagger_auto_schema(auto_schema=None)
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        data = serializer.validated_data
+        data["currency"] = CURRENCY_MAP[data["currency"]]
+        data["total"] = data["price_per_student"] * data["school_size"]
 
-        return redirect("dwitter:upload_file")
+        quote = serializer.save()
+        data["invoice_no"] = 10000 + quote.id
+        
+        filename=f'Code4Kids {self._type} - {data["invoice_no"]}.pdf'
+        
+        pdf = self.createPdf(data)
+        data["pdf_file"] = ContentFile(pdf.getvalue(), filename)
+
+        serializer.save()
+        return FileResponse(pdf, as_attachment=True, filename=filename)
     
     @swagger_auto_schema(auto_schema=None)
     def get(self, request, *args, **kwargs):
         form = QuoteForm(request.FILES)
         return render(request, 'upload.html', {"form": form})
+
+
+CURRENCY_MAP = {
+    "ZAR": "R",
+    "USD": "$",
+    "GBP": "£",
+    "EUR": "€",
+    "AUD": "$",
+    "NZD": "$",
+    "INR": "₹",
+}

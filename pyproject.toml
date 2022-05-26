@@ -10,6 +10,7 @@ Django = "^4.0.4"
 djangorestframework = "^3.13.1"
 django-restframework = "^0.0.1"
 drf-yasg = "^1.20.0"
+weasyprint = "^55.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
