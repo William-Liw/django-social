@@ -39,6 +39,7 @@ def create_profile(sender, instance, created, **kwargs):
 
 class Quote(models.Model):
     invoice_no = models.CharField(max_length=16, default="")
+    user = models.ForeignKey(User, related_name="quotes", on_delete=models.DO_NOTHING)
     # organisation = models.ForeignKey("Organisation", on_delete=models.CASCADE, related_name="quotes", blank=True, null=True)
     school_name = models.CharField(max_length=256)
     to_name = models.CharField(max_length=256)

@@ -21,4 +21,5 @@ class QuoteForm(forms.ModelForm):
 
     class Meta:
         model = Quote
-        fields = "__all__"
+        exclude = ("user", "invoice_no", "pdf_file")
+

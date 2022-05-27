@@ -11,13 +11,34 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import FileResponse
 from django.conf import settings
 from rest_framework.generics import ListCreateAPIView
-from .serializers import QuoteSerializer
+from .serializers import QuoteSerializer, CreateQuoteSerializer
 from drf_yasg.utils import swagger_auto_schema
 from django.core.files import File
 from django.template.loader import get_template
 from weasyprint import HTML
 from django.core.files.base import ContentFile
 
+
+default_val = {
+    "school_name" : "willschool",
+    "to_email" : "email@thelessonspace.com",
+    "school_size" : 1,
+    "price_per_student" : 250,
+    "total" : 250,
+    "currency" : "ZAR",
+    "to_name" : "recipient",
+    "date" : "2022-05-11",
+    "school_address" : "school address",
+    "school_country" : "South Africa",
+    "special_comments" : "special comments",
+    "discount" : 0,
+    "bank_detail" : """Bank: First National Bank (FNB)
+                Name: SkillUp Tutors
+                Branch Code: 250655
+                Account Number: 62530958018
+                SWIFT Code: FIRNZAJJ`,"""
+
+}
 
 @login_required
 def dashboard(request):
@@ -80,7 +101,9 @@ def upload_file(request):
     if request.method == 'POST':
         form = QuoteForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            quote = form.save(commit=False)
+            quote.user = request.user
+            quote.save()
             return redirect("dwitter:upload_file")
     else:
         form = QuoteForm(request.FILES)
@@ -90,6 +113,13 @@ class QuoteView(ListCreateAPIView):
     _type = "Proforma Invoice"
     serializer_class = QuoteSerializer
     queryset = Quote.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return QuoteSerializer
+        else:
+            return CreateQuoteSerializer
+
 
     def createPdf(self, data):  
         raw_html = get_template("invoices/quote.html").render({"title": self._type, **data})
@@ -107,6 +137,7 @@ class QuoteView(ListCreateAPIView):
         data = serializer.validated_data
         data["currency"] = CURRENCY_MAP[data["currency"]]
         data["total"] = data["price_per_student"] * data["school_size"]
+        data["user"] = request.user
 
         quote = serializer.save()
         data["invoice_no"] = 10000 + quote.id
@@ -117,12 +148,16 @@ class QuoteView(ListCreateAPIView):
         data["pdf_file"] = ContentFile(pdf.getvalue(), filename)
 
         serializer.save()
-        return FileResponse(pdf, as_attachment=True, filename=filename)
+        # return FileResponse(pdf, as_attachment=True, filename=filename)
+        return redirect("dwitter:upload_file")
+
     
     @swagger_auto_schema(auto_schema=None)
     def get(self, request, *args, **kwargs):
-        form = QuoteForm(request.FILES)
-        return render(request, 'upload.html', {"form": form})
+        form = QuoteForm(request.POST or None, initial = default_val)
+        user = request.user
+
+        return render(request, 'upload.html', {"form": form, "user": user})
 
 
 CURRENCY_MAP = {
