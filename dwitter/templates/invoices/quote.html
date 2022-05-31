@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{{ title }}</title>
+  <link rel="license" href="http://www.opensource.org/licenses/mit-license/">
+  <style>
+  /* reset */
+
+  *
+  {
+      border: 0;
+      box-sizing: content-box;
+      font-family: inherit;
+      font-size: inherit;
+      font-style: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      text-decoration: none;
+      vertical-align: top;
+  }
+
+  /* heading */
+
+  h1 { font: bold 100% sans-serif; letter-spacing: 0.5em; text-align: center; text-transform: uppercase; }
+
+  /* table */
+
+  table { font-size: 75%; table-layout: fixed; width: 100%; }
+  table { border-collapse: separate; border-spacing: 2px; }
+  th, td { border-width: 1px; padding: 0.5em; position: relative; text-align: left; }
+  th, td { border-radius: 0.25em; border-style: solid; }
+  th { background: #EEE; border-color: #BBB; }
+  td { border-color: #DDD; }
+
+  /* page */
+
+  html { font: 16px/1 'Open Sans', sans-serif; overflow: auto; padding: 0.5in; }
+  html { background: #999; cursor: default; }
+
+  body { box-sizing: border-box; height: 11in; margin: 0 auto; overflow: hidden; padding: 0.5in; width: 8.5in; }
+  body { background: #FFF; border-radius: 1px; box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5); }
+
+  /* header */
+
+  header { margin: 0 0 3em; }
+  header:after { clear: both; content: ""; display: table; }
+
+  header h1 { background: #000; border-radius: 0.25em; color: #FFF; margin: 0 0 1em; padding: 0.5em 0; }
+  header address { float: left; font-size: 75%; font-style: normal; line-height: 1.25; margin: 0 1em 1em 0; }
+  header address p { margin: 0 0 0.25em; }
+  header span, header img { display: block; float: right; }
+  header span { margin: 0 0 1em 1em; max-height: 25%; max-width: 60%; position: relative; }
+  header img { max-height: 100%; max-width: 100%; }
+  header input { cursor: pointer; -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"; height: 100%; left: 0; opacity: 0; position: absolute; top: 0; width: 100%; }
+
+  /* article */
+
+  article, article address, table.meta, table.inventory { margin: 0 0 0; }
+  article:after { clear: both; content: ""; display: table; }
+  article h1 { clip: rect(0 0 0 0); position: absolute; }
+
+  article address { float: left; }
+
+  /* table meta & balance */
+
+  table.meta, table.balance { float: right; width: 36%; }
+  table.meta:after, table.balance:after { clear: both; content: ""; display: table; }
+
+  /* table meta */
+
+  table.meta th { width: 40%; }
+  table.meta td { width: 60%; }
+
+  /* table items */
+
+  table.inventory { clear: both; width: 100%; margin: }
+  table.inventory th { font-weight: bold; text-align: center; }
+
+  table.inventory td:nth-child(1) { width: 26%; }
+  table.inventory td:nth-child(2) { width: 38%; }
+  table.inventory td:nth-child(3) { width: 12%; }
+  table.inventory td:nth-child(4) { text-align: right; width: 12%; }
+  table.inventory td:nth-child(5) { text-align: right; width: 12%; }
+
+  /* table balance */
+
+  table.balance th, table.balance td { width: 50%; }
+  table.balance td { text-align: right; }
+
+
+  /* aside */
+
+  aside h1 { border: none; border-width: 0 0 1px; margin: 0 0 1em; }
+  aside h1 { border-color: #999; border-bottom-style: solid; }
+
+  /* javascript */
+
+  @media print {
+      * { -webkit-print-color-adjust: exact; }
+      html { background: none; padding: 0; }
+      body { box-shadow: none; margin: 0; }
+      span:empty { display: none; }
+  }
+
+  @page { margin: 0; }
+
+
+  </style>
+</head>
+<body>
+<header>
+  <h1>{{ title }}</h1>
+  <address>
+    <p>Code4Kids, powered by SkillUp (Pty) Ltd.</p>
+    <p>Cape Town, South Africa</p>
+    <p>Email: accounts@getcode4kids.com</p>
+    <p>SkillUp (Pty) Ltd. VAT no: 4060292911</p>
+  </address>
+  <span><a href='https://www.getcode4kids.com'><img style='width:240px' alt="Code4Kids"
+                                                    src="https://www.getcode4kids.com/_nuxt/img/207378e.svg"></a></span>
+</header>
+<article>
+  <address>
+    <p style="font-weight: bold; font-size: 75%;">To:</p>
+    <p style="font-size: 75%;">{{ school_name }}</p>
+    <p style="font-size: 75%;">{{ school_address }}</p>
+    <p style="font-size: 75%;">{{ school_country }}</p>
+    <p style="font-size: 75%;">{{ to_name }}</p>
+    <p style="font-size: 75%;">{{ to_email }}</p>
+  </address>
+  <table class="meta" style="margin: 0 0 3em 0;">
+    <tr>
+      <th><span>Date</span></th>
+      <td><span>{{date}}</span></td>
+    </tr>
+    <tr>
+      <th><span>Valid For</span></th>
+      <td><span>3 Months</span></td>
+    </tr>
+    <tr>
+      <th><span>Invoice no. </span></th>
+      <td><span> {{invoice_no}} </span>
+    </tr>
+  </table>
+  <table class="inventory">
+    <thead>
+    <tr>
+      <th><span>Service</span></th>
+      <th><span>No. of Students <br>(Up to) </span></th>
+      <th><span>Price per Student</span></th>
+      <th><span>Yearly License</span></th>
+      <th><span>Discount</span></th>
+      <th><span>Total</span></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><a href="https://getcode4kids.com" target="_blank">Code4Kids</a></td>
+      <td>{{ school_size }}</td>
+      <td><span data-prefix>{{ currency }}</span><span>{{ price_per_student }}</span></td>
+      <td><span data-prefix>{{ currency }}</span><span>{{ total }}</span></td>
+      <td><span>{{ discount }}%</span></td>
+      <td><span data-prefix>{{ currency }}</span><span>{{ total }}</span></td>
+    </tr>
+    </tbody>
+  </table>
+  <p style="font-weight: lighter; font-size: 60%;">
+    Pricing is based on total number of students per year. More information can be found <a
+      href="https://getcode4kids.com/pricing">here</a>.
+  </p>
+  <table class="balance" style="margin: 3em 0 3em 0;">
+    <tr>
+      <th><span>Subtotal</span></th>
+      <td><span data-prefix>{{ currency }}</span><span>{{ total }}</span></td>
+    </tr>
+    <tr>
+      <th><span>Total Due</span></th>
+      <td><span data-prefix>{{ currency }}</span><span>{{ total }}</span></td>
+    </tr>
+  </table>
+</article>
+<aside>
+  {% if special_comments %}
+  <table style="width: 100%; margin: 0 0 3em 0;">
+    <tr>
+      <th>Additional Comments</th>
+    </tr>
+    <tr>
+      <td>{{ special_comments }}</td>
+    </tr>
+  </table>
+  {% endif %}
+  <table style="width: 50%; margin: 0 0 3em 0;">
+    <tr>
+      <td style="vertical-align: middle">Request Invoice, or follow below instructions:</td>
+    </tr>
+    <tr>
+      <td>{{ bank_detail }}</td>
+    </tr>
+    <tr>
+      <td> Email: accounts@getcode4kids.com </td>
+    </tr>
+      <td style="font-weight: bold;">Reference: {{ school_name }}</td>
+  </table>
+</aside>
+</body>
+</html>

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Dweet
+from .models import Dweet, Quote
 
 class DweetForm(forms.ModelForm):
     body = forms.CharField(
@@ -16,3 +16,10 @@ class DweetForm(forms.ModelForm):
     class Meta:
         model = Dweet
         exclude = ("user", )
+
+class QuoteForm(forms.ModelForm):
+
+    class Meta:
+        model = Quote
+        exclude = ("user", "invoice_no", "pdf_file")
+

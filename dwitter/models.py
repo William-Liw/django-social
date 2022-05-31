@@ -28,8 +28,6 @@ class Dweet(models.Model):
             f"{self.created_at:%Y-%m-%d %H:%M}: "
             f"{self.body[:30]}..."
         )
-            
-
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
@@ -39,5 +37,30 @@ def create_profile(sender, instance, created, **kwargs):
         user_profile.follows.add(instance.profile)
         user_profile.save()
 
+class Quote(models.Model):
+    invoice_no = models.CharField(max_length=16, default="")
+    user = models.ForeignKey(User, related_name="quotes", on_delete=models.DO_NOTHING)
+    # organisation = models.ForeignKey("Organisation", on_delete=models.CASCADE, related_name="quotes", blank=True, null=True)
+    school_name = models.CharField(max_length=256)
+    to_name = models.CharField(max_length=256)
+    school_address = models.CharField(max_length=2048)
+    school_country = models.CharField(max_length=256)
+    to_email = models.EmailField()
+    school_size = models.IntegerField()
+    price_per_student = models.IntegerField()
+    discount = models.IntegerField()
+    total = models.IntegerField()
+    date = models.DateField()
+    currency = models.CharField(max_length=3)
+    bank_detail = models.CharField(max_length=2048, blank=True)
+    pdf_file = models.FileField(null=True, blank=True)
+    # Optional Fields
+    special_comments = models.CharField(max_length=2048, blank=True, null=True)
 
+    def __str__(self):
+        return (
+            f"{self.invoice_no} "
+            f"{self.pdf_file} "
+            f"{self.school_name} "
 
+        )
